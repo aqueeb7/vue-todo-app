@@ -1,10 +1,10 @@
-import { defineStore } from "pinia";
+import { PiniaVuePlugin, defineStore } from "pinia";
 import apiClient from "../services/api";
 import { reactive, ref, onMounted } from "vue";
 
 export const useItemStore = defineStore("item", () => {
-  const items = reactive([])
-  var itemId = ref("")
+  var items = reactive([])
+  let itemId = ref("")
 
   const setTodoId = async (id) => {
     itemId = id
@@ -24,10 +24,14 @@ export const useItemStore = defineStore("item", () => {
 
   const getAllItems = async (id) => {
     try {
-      console.log({store: id});
+      console.log({ store: id });
       const { data } = await apiClient.get(`/todos/${id}/items`)
+      // items = data.content
       data.content.forEach((row) => {
-        items.push(row)
+        console.log(row);
+        if (items.filter(v => v.itemId != row.itemId)) {
+          items.push(row)
+        }
       })
       console.log({ getAllItems: items });
     } catch (error) {

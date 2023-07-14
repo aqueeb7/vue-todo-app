@@ -16,6 +16,10 @@ const toggleTask = async (id) => {
   };
   await noteStore.updateNote(id, data);
 };
+
+const handleDelete = async (id) => {
+  await noteStore.deleteNote(id);
+};
 </script>
 
 <template>
@@ -29,7 +33,9 @@ const toggleTask = async (id) => {
     <h1>{{ row.title }}</h1>
     <p>{{ row.description }}</p>
     <!-- <Item /> -->
-    <button><Icon icon="material-symbols:delete" width="25" /></button>
+    <button @click="handleDelete(row.todoId)">
+      <Icon icon="material-symbols:delete" width="25" />
+    </button>
     <button @click="router.push(`/item/${row.todoId}`)">
       <Icon icon="ic:round-remove-red-eye" color="F4D160" width="25" />
     </button>

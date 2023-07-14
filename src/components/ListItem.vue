@@ -9,13 +9,15 @@ const itemText = ref("");
 const item = ref({
   itemText: itemText,
 });
+const searchTerm = ref("");
+const filteredData = ref([]);
 const props = defineProps({
   itemId: String,
 });
-let id = ref()
+let id = ref();
 
 onMounted(async () => {
-  console.log(props.itemId);
+  // console.log(props.itemId);
   id = props.itemId;
   await itemStore.getAllItems(id);
 });
@@ -31,6 +33,19 @@ const addItem = async (e) => {
     console.error(error);
   }
 };
+
+const filterData = async () => {
+  /* filtering algorithm goes here */
+  console.log({view: itemStore});
+  console.log({view: searchTerm});
+  const term = searchTerm.value.toLowerCase();
+  filteredData.value = await itemStore.items.filter((item) => {
+    console.log(item);
+    return item.itemText.toLowerCase().includes(term);
+  });
+};
+
+// console.log({aq: itemStore});
 </script>
 
 <template>
@@ -53,16 +68,27 @@ const addItem = async (e) => {
     </div>
     <div class="column m-5">
       <article class="panel is-info">
-        <p class="panel-heading">Items  List</p>
+        <p class="panel-heading">Items List</p>
 
         <div class="panel-block">
           <p class="control has-icons-left">
-            <input class="input is-info" type="text" placeholder="Search" />
+            <input
+              class="input is-info"
+              v-model="searchTerm"
+              @input="filterData"
+              type="text"
+              placeholder="Search"
+            />
             <span class="icon is-left">
               <Icon icon="ic:baseline-search" width="20" color="black" />
             </span>
           </p>
         </div>
+        <!-- <ul>
+          <li v-for="item in filteredData">{{ item }}</li>
+        </ul> -->
+
+        {{ itemStore.items  }}
         <a class="panel-block" v-for="row in itemStore.items" :key="itemId">
           <p>{{ row.itemText }}</p>
         </a>

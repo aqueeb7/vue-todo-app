@@ -46,12 +46,24 @@ export const useNoteStore = defineStore('note',() => {
       console.error(error);
     }
   }
+  const deleteNote = async (id) => {
+    try {
+      const response = await apiClient.delete(`/todo/delete/${id}`)
+      const index = notes.findIndex((note) => note._id === id)
+      await notes.splice(index, 1);
+    }
+    catch (err) {
+      console.log(err);
+    }
+  }
+
 
   return {
     notes,
     addNote,
     getAllNotes,
-    updateNote
+    updateNote,
+    deleteNote
   }
 
 })
