@@ -27,3 +27,10 @@ npm run dev
 ```sh
 npm run build
 ```
+
+### This is a Vue 3 app with script setup pattern
+
+```sh
+<script setup>
+</script>
+```
