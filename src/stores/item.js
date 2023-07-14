@@ -12,11 +12,10 @@ export const useItemStore = defineStore("item", () => {
 
   const addItem = async (data) => {
     try {
-      // await items.unshift(data);
-
       const res = await apiClient.post(`/todos/${itemId}/items`, { "itemText": data });
       // no response data body has no contents
       // having diffculty in auto updating the list items
+      await getAllItems(itemId)
     } catch (error) {
       console.error(error);
     }
@@ -28,14 +27,16 @@ export const useItemStore = defineStore("item", () => {
       const { data } = await apiClient.get(`/todos/${id}/items`)
       // items = data.content
       data.content.forEach((row) => {
-        console.log(row);
-        if (items.filter(v => v.itemId != row.itemId)) {
+        let index = items.findIndex((v) => {
+          return v.itemId == row.itemId
+        })
+        if (index === -1) {
           items.push(row)
         }
       })
       console.log({ getAllItems: items });
     } catch (error) {
-      console.error(error);
+      console.log(error)
     }
   }
 

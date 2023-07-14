@@ -9,9 +9,14 @@ export const useNoteStore = defineStore('note',() => {
 
   const addNote = async (data) => {
     try {
-      const res = await apiClient.post('/todo/new', data)
-      notes.unshift(res.data)
-      let todoId = res.data.data.todoId
+      const res = await apiClient.post('/todos', {
+        "title": data.title,
+        "description": data.description,
+        "done": data.done
+      })
+      if (res.status == 201) {
+        await getAllNotes()
+      }
 
     } catch (error) {
       console.log(error);
@@ -31,7 +36,12 @@ export const useNoteStore = defineStore('note',() => {
       const { data } = await apiClient.get('/todos');
       // console.log(data.content);
       data.content.forEach((row) => {
-        notes.push(row)
+        let index = notes.findIndex((v) => {
+          return v.todoId == row.todoId
+        })
+        if (index === -1) {
+          notes.push(row)
+        }
       })
     } catch (error) {
       

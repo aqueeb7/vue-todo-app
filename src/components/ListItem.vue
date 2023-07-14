@@ -3,6 +3,8 @@ import { ref, onMounted } from "vue";
 import { useItemStore } from "../stores/item";
 import { Icon } from "@iconify/vue";
 
+import apiClient from "../services/api";
+
 const itemStore = useItemStore();
 const isListed = ref(true);
 const itemText = ref("");
@@ -19,14 +21,13 @@ let id = ref();
 onMounted(async () => {
   // console.log(props.itemId);
   id = props.itemId;
+  itemStore.items.splice(0, itemStore.items.length);
   await itemStore.getAllItems(id);
 });
 
 const addItem = async (e) => {
-  // e.prevent.default();
   try {
     await itemStore.addItem(itemText.value);
-    await itemStore.getAllItems(id.value);
     alert("Added successfully!");
     e.target.reset();
   } catch (error) {
@@ -36,13 +37,16 @@ const addItem = async (e) => {
 
 const filterData = async () => {
   /* filtering algorithm goes here */
-  console.log({view: itemStore});
-  console.log({view: searchTerm});
+  console.log({ view: itemStore });
+  console.log({ view: searchTerm });
   const term = searchTerm.value.toLowerCase();
-  filteredData.value = await itemStore.items.filter((item) => {
-    console.log(item);
-    return item.itemText.toLowerCase().includes(term);
-  });
+  if (term === "" || term.length == 0) {
+    return [];
+  } else {
+    filteredData.value = await itemStore.items.filter((item) => {
+      return item.itemText.toLowerCase().includes(term);
+    });
+  }
 };
 
 // console.log({aq: itemStore});
@@ -75,7 +79,7 @@ const filterData = async () => {
             <input
               class="input is-info"
               v-model="searchTerm"
-              @input="filterData"
+              @change="filterData"
               type="text"
               placeholder="Search"
             />
@@ -84,12 +88,16 @@ const filterData = async () => {
             </span>
           </p>
         </div>
-        <!-- <ul>
-          <li v-for="item in filteredData">{{ item }}</li>
-        </ul> -->
-
-        {{ itemStore.items  }}
-        <a class="panel-block" v-for="row in itemStore.items" :key="itemId">
+        <a
+          class="panel-block is-info"
+          v-for="row in filteredData"
+          :key="row.itemId"
+          style="background-color: yellowgreen"
+        >
+          <p>{{ row.itemText }}</p>
+        </a>
+        <br />
+        <a class="panel-block" v-for="row in itemStore.items" :key="row.itemId">
           <p>{{ row.itemText }}</p>
         </a>
       </article>

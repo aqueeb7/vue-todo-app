@@ -7,6 +7,7 @@ import router from "../router";
 const noteStore = useNoteStore();
 
 onMounted(async () => {
+  noteStore.notes.splice(0, noteStore.notes.length)
   await noteStore.getAllNotes();
 });
 

@@ -28,28 +28,27 @@ const note = reactive({
 const isExpanded = ref(false);
 const isListed = ref(false);
 
-const submitButton = async (e) => {
-  e.prevent.default()
+const submitButton = async () => {
   try {
     await noteStore.addNote(note);
     e.target.reset();
   } catch (error) {}
 };
 async function addItem(e) {
-e.prevent.default();
-try {
-await itemStore.addItem(item);
-e.target.reset();
-} catch (error) {
-console.error(error);
-}
+  e.prevent.default();
+  try {
+    await itemStore.addItem(item);
+    e.target.reset();
+  } catch (error) {
+    console.error(error);
+  }
 }
 </script>
 
 <template>
   <div class="custom-main">
     <div>
-      <form class="note-form">
+      <form class="note-form" @submit.prevent="submitButton">
         <input
           type="text"
           v-if="isExpanded"
@@ -66,33 +65,12 @@ console.error(error);
             rows="{{isExpanded?3:1}}"
           >
           </textarea>
-         
         </p>
-        <!-- <div class="item-form" v-if="isListed">
-            <ul id="item-container">
-              <li>
-                <input
-                  v-model="itemText"
-                  class="item-input"
-                  type="text"
-                  placeholder="Enter Item"
-                />
-              </li>
-              <button @click="addItem"><Icon icon="material-symbols:add-box" width="20"/></button>
-            </ul>
-        </div> -->
         <button class="list-btn">
-          <Icon icon="material-symbols:save" width="25" @click="submitButton" />
+          <Icon icon="material-symbols:save" width="25" />
         </button>
       </form>
     </div>
-
-    <!-- <button @click="isListed = !isListed" class="todo-btn">
-      <Icon
-        icon="material-symbols:format-list-bulleted-add-rounded"
-        width="25"
-      />
-    </button> -->
   </div>
 </template>
 
